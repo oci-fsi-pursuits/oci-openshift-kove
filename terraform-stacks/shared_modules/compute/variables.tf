@@ -42,6 +42,11 @@ variable "compute_ocpu" {
   type = number
 }
 
+variable "compute_cluster_id" {
+  type    = string
+  default = ""
+}
+
 variable "cluster_name" {
   type = string
 }

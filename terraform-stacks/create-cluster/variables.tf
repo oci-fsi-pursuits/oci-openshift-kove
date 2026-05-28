@@ -282,6 +282,18 @@ variable "distribute_compute_instances_across_fds" {
   default     = true
 }
 
+variable "enable_rdma_compute_cluster" {
+  type        = bool
+  description = "Create or use an OCI Compute Cluster for OpenShift bare metal compute workers so they can participate in RDMA with external XPD nodes."
+  default     = false
+}
+
+variable "rdma_compute_cluster_id" {
+  type        = string
+  description = "Optional existing OCI Compute Cluster OCID for OpenShift compute workers. When empty and enable_rdma_compute_cluster is true, this stack creates one."
+  default     = ""
+}
+
 variable "create_public_dns" {
   type        = bool
   description = "Create a public DNS zone with your Base domain specified in Zone DNS. If this is not created, it is advised that you create a private DNS zone unless you are bringing your own DNS solution. To resolve cluster hostnames without DNS, users should add entries to /etc/hosts mapping the cluster hostnames to the IP address of the api_apps Load Balancer. The etc_hosts_entry output can be used for this purpose."

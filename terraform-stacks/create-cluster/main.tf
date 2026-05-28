@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.2"
   required_providers {
     oci = {
       source  = "oracle/oci"
@@ -167,6 +167,26 @@ module "webserver" {
   webserver_subnet_id = module.network.op_subnet_public # depend on variable
 }
 
+resource "oci_core_compute_cluster" "openshift_compute_workers" {
+  count = var.enable_rdma_compute_cluster && trimspace(var.rdma_compute_cluster_id) == "" ? 1 : 0
+
+  lifecycle {
+    precondition {
+      condition     = local.is_compute_iscsi_type
+      error_message = "enable_rdma_compute_cluster requires compute_shape to be a bare metal shape."
+    }
+    precondition {
+      condition     = length(local.compute_node_ads) == 1
+      error_message = "enable_rdma_compute_cluster requires all compute workers in one availability domain. Set distribute_compute_instances_across_ads = false and starting_ad_name_compute to the RDMA AD."
+    }
+  }
+
+  availability_domain = local.rdma_compute_cluster_ad
+  compartment_id      = var.compartment_ocid
+  display_name        = "${var.cluster_name}-compute-rdma"
+  defined_tags        = module.resource_attribution_tags.openshift_resource_attribution_tag
+}
+
 module "compute" {
   source = "./shared_modules/compute"
 
@@ -190,6 +210,7 @@ module "compute" {
   compute_boot_volume_vpus_per_gb = var.compute_boot_volume_vpus_per_gb
   compute_memory                  = var.compute_memory
   compute_ocpu                    = var.compute_ocpu
+  compute_cluster_id              = local.effective_rdma_compute_cluster_id
 
   distribute_cp_instances_across_fds      = var.distribute_cp_instances_across_fds
   distribute_compute_instances_across_fds = var.distribute_compute_instances_across_fds

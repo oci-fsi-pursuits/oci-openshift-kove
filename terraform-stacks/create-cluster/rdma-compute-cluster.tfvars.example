@@ -1,0 +1,23 @@
+# OpenShift BM workers + XPD RDMA integration.
+# Add these overrides to the OpenShift create-cluster stack.
+
+compute_shape = "BM.Optimized3.36"
+
+# All compute workers must be in the same AD as the OCI Compute Cluster.
+distribute_compute_instances_across_ads = false
+starting_ad_name_compute                = "REPLACE_WITH_RDMA_AD"
+
+# Leave rdma_compute_cluster_id empty to let the OpenShift stack create the
+# Compute Cluster. Set it to an existing OCID to reuse one.
+enable_rdma_compute_cluster = true
+rdma_compute_cluster_id     = ""
+
+# XPD stack handoff after OpenShift apply:
+#
+# use_existing_vcn           = true
+# existing_vcn_id            = "<OpenShift op_vcn_openshift_vcn>"
+# existing_public_subnet_id  = "<OpenShift op_subnet_public>"
+# existing_private_subnet_id = "<OpenShift op_subnet_private_bare_metal>"
+#
+# rdma_deployment_mode = "compute_cluster"
+# compute_cluster_id   = "<OpenShift compute_cluster_id>"

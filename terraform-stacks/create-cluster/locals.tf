@@ -20,6 +20,11 @@ locals {
 
   is_control_plane_iscsi_type = can(regex("^BM\\..*$", var.control_plane_shape))
   is_compute_iscsi_type       = can(regex("^BM\\..*$", var.compute_shape))
+  compute_node_ads            = distinct([for node in values(module.meta.compute_node_map) : node.ad_name])
+  rdma_compute_cluster_ad     = length(local.compute_node_ads) > 0 ? local.compute_node_ads[0] : module.meta.ad_name
+  effective_rdma_compute_cluster_id = var.enable_rdma_compute_cluster ? (
+    trimspace(var.rdma_compute_cluster_id) != "" ? trimspace(var.rdma_compute_cluster_id) : oci_core_compute_cluster.openshift_compute_workers[0].id
+  ) : ""
 
   apps_subnet_id        = var.enable_public_apps_lb ? module.network.op_subnet_public : module.network.op_subnet_private_ocp
   apps_security_list_id = var.enable_public_apps_lb ? module.network.op_security_list_public : module.network.op_security_list_private

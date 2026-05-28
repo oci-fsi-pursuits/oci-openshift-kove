@@ -62,6 +62,8 @@ variableGroups:
   - distribute_compute_instances_across_ads
   - starting_ad_name_compute
   - distribute_compute_instances_across_fds
+  - enable_rdma_compute_cluster
+  - rdma_compute_cluster_id
   visible: create_openshift_instances
 
 - title: "Networking Configuration"
@@ -407,6 +409,21 @@ variables:
     description: Select the checkbox to enable compute instances to be automatically distributed across ADs in a round-robin sequence starting from your selected AD. If unselected, then all nodes will be created in the selected starting AD.
     default: true
     required: true
+
+  enable_rdma_compute_cluster:
+    type: boolean
+    title: Enable RDMA Compute Cluster for Compute Workers
+    description: Create or use an OCI Compute Cluster for bare metal compute workers so external XPD nodes can join the same RDMA fabric.
+    default: false
+    required: false
+
+  rdma_compute_cluster_id:
+    type: string
+    title: Existing RDMA Compute Cluster OCID
+    description: Optional. Leave empty to create a Compute Cluster in this stack when RDMA mode is enabled.
+    default: ""
+    required: false
+    visible: enable_rdma_compute_cluster
 
   starting_ad_name_compute:
     type: oci:identity:availabilitydomain:name

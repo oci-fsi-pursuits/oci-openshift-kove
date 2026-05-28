@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.2"
   required_providers {
     oci = {
       source  = "oracle/oci"
@@ -60,6 +60,18 @@ resource "oci_core_instance" "compute_node" {
   fault_domain        = var.distribute_compute_instances_across_fds ? each.value.fault_domain : null
   display_name        = "${var.cluster_name}-compute-${each.value.index}"
   shape               = var.compute_shape
+  compute_cluster_id  = trimspace(var.compute_cluster_id) != "" ? trimspace(var.compute_cluster_id) : null
+
+  lifecycle {
+    precondition {
+      condition     = trimspace(var.compute_cluster_id) == "" || var.is_compute_iscsi_type
+      error_message = "compute_cluster_id can only be used with bare metal compute worker shapes."
+    }
+    precondition {
+      condition     = trimspace(var.compute_cluster_id) == "" || length(distinct([for node in values(var.compute_node_map) : node.ad_name])) == 1
+      error_message = "compute_cluster_id requires all compute workers in one availability domain."
+    }
+  }
 
   defined_tags = {
     "${var.op_openshift_tag_namespace}.${var.op_openshift_tag_instance_role}"         = "compute"
