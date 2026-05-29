@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = ">= 1.2"
   required_providers {
     oci = {
       source  = "oracle/oci"
@@ -92,6 +92,7 @@ module "compute" {
   compute_boot_volume_vpus_per_gb = var.compute_boot_volume_vpus_per_gb
   compute_memory                  = var.compute_memory
   compute_ocpu                    = var.compute_ocpu
+  compute_cluster_id              = local.effective_rdma_compute_cluster_id
 
   distribute_cp_instances_across_fds      = var.distribute_cp_instances_across_fds
   distribute_compute_instances_across_fds = var.distribute_compute_instances_across_fds

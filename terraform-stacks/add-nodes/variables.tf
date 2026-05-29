@@ -171,6 +171,18 @@ variable "distribute_compute_instances_across_fds" {
   default     = true
 }
 
+variable "enable_rdma_compute_cluster" {
+  type        = bool
+  description = "Use an existing OCI Compute Cluster for new bare metal compute workers so they can participate in RDMA with external XPD nodes."
+  default     = false
+}
+
+variable "rdma_compute_cluster_id" {
+  type        = string
+  description = "Existing OCI Compute Cluster OCID from the original RDMA-enabled OpenShift deployment. Required when enable_rdma_compute_cluster is true."
+  default     = ""
+}
+
 variable "cluster_instance_role_tag_namespace" {
   description = "To assign roles like control_plane or compute to instances, a Tag Namespace is required. If you're using the default format openshift-'$cluster_name', you can skip specifying the Tag Namespace—it's automatically detected using the cluster name. If your setup uses a custom format, be sure to provide the correct Tag Namespace explicitly."
   type        = string

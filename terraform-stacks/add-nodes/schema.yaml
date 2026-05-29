@@ -49,6 +49,8 @@ variableGroups:
     - distribute_compute_instances_across_ads
     - starting_ad_name_compute
     - distribute_compute_instances_across_fds
+    - enable_rdma_compute_cluster
+    - rdma_compute_cluster_id
 
 - title: "Advanced Configurations"
   variables:
@@ -280,6 +282,21 @@ variables:
     description: Select the checkbox to have compute instances distributed across Fault Domains in a round-robin sequence. If false, then the OCI Compute service will distribute them for you based on shape availability and other criteria.
     default: true
     required: true
+
+  enable_rdma_compute_cluster:
+    type: boolean
+    title: Enable RDMA Compute Cluster for Compute Workers
+    description: Use an existing OCI Compute Cluster for new bare metal compute workers so external XPD nodes can use the same RDMA fabric.
+    default: false
+    required: false
+
+  rdma_compute_cluster_id:
+    type: string
+    title: Existing RDMA Compute Cluster OCID
+    description: Required when RDMA mode is enabled. Use the compute_cluster_id output from the original RDMA-enabled OpenShift deployment.
+    default: ""
+    required: false
+    visible: enable_rdma_compute_cluster
 
   #
   # Advanced

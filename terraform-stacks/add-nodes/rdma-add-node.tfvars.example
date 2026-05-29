@@ -1,0 +1,14 @@
+# Add an OpenShift BM worker to an existing RDMA-enabled cluster.
+# Use the same Compute Cluster OCID that was output by create-cluster.
+
+control_plane_count = 0
+compute_count       = 1
+
+compute_shape = "BM.Optimized3.36"
+
+# The added worker must be in the same AD as the existing OCI Compute Cluster.
+distribute_compute_instances_across_ads = false
+starting_ad_name_compute                = "REPLACE_WITH_RDMA_AD"
+
+enable_rdma_compute_cluster = true
+rdma_compute_cluster_id     = "<OpenShift create-cluster compute_cluster_id output>"

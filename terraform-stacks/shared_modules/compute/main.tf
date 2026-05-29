@@ -64,6 +64,10 @@ resource "oci_core_instance" "compute_node" {
 
   lifecycle {
     precondition {
+      condition     = trimspace(var.compute_cluster_id) == "" || startswith(trimspace(var.compute_cluster_id), "ocid1.computecluster.")
+      error_message = "compute_cluster_id must be empty or a valid OCI Compute Cluster OCID."
+    }
+    precondition {
       condition     = trimspace(var.compute_cluster_id) == "" || var.is_compute_iscsi_type
       error_message = "compute_cluster_id can only be used with bare metal compute worker shapes."
     }
